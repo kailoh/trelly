@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OfficeApp xsi:type="MailApp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/office/appforoffice/1.0">
+  <Id>905c435a-e691-40cf-8bb8-4da3ac536b05</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Kai Loh</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Trelly (DEV)" />
+  <Description DefaultValue="Save the tasks in your email to Trello" />
+  <Capabilities>
+    <Capability Name="Mailbox" />
+  </Capabilities>
+  <DesktopSettings>
+    <SourceLocation DefaultValue="https://localhost:3000" />
+    <RequestedHeight>450</RequestedHeight>
+  </DesktopSettings>
+  <TabletSettings>
+    <SourceLocation DefaultValue="https://localhost:3000" />
+    <RequestedHeight>450</RequestedHeight>
+  </TabletSettings>
+  <PhoneSettings>
+    <SourceLocation DefaultValue="https://localhost:3000" />
+  </PhoneSettings>
+  <Permissions>ReadItem</Permissions>
+  <Rule xsi:type="RuleCollection" Mode="And">
+    <Rule xsi:type="ItemIs" ItemType="Message" />
+    <Rule xsi:type="ItemHasKnownEntity" EntityType="TaskSuggestion" />
+  </Rule>
+</OfficeApp>

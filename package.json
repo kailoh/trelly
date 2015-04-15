@@ -1,0 +1,24 @@
+{
+  "name": "trelly",
+  "version": "1.0.0",
+  "description": "Welcome to Trelly",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kailoh/trelly.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kailoh/trelly/issues"
+  },
+  "homepage": "https://github.com/kailoh/trelly",
+  "dependencies": {
+    "express": "^4.12.3",
+    "grunt": "^0.4.5",
+    "jade": "^1.9.2"
+  }
+}
