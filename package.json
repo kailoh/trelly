@@ -18,7 +18,9 @@
   "homepage": "https://github.com/kailoh/trelly",
   "dependencies": {
     "express": "^4.12.3",
+    "fs": "0.0.2",
     "grunt": "^0.4.5",
+    "https": "^1.0.0",
     "jade": "^1.9.2"
   }
 }

@@ -10,15 +10,15 @@
     <Capability Name="Mailbox" />
   </Capabilities>
   <DesktopSettings>
-    <SourceLocation DefaultValue="https://kailoh.github.io/trelly/" />
+    <SourceLocation DefaultValue="https://desolate-bayou-6591.herokuapp.com/" />
     <RequestedHeight>450</RequestedHeight>
   </DesktopSettings>
   <TabletSettings>
-    <SourceLocation DefaultValue="https://kailoh.github.io/trelly" />
+    <SourceLocation DefaultValue="https://desolate-bayou-6591.herokuapp.com/" />
     <RequestedHeight>450</RequestedHeight>
   </TabletSettings>
   <PhoneSettings>
-    <SourceLocation DefaultValue="https://kailoh.github.io/trelly" />
+    <SourceLocation DefaultValue="https://desolate-bayou-6591.herokuapp.com/" />
   </PhoneSettings>
   <Permissions>ReadItem</Permissions>
   <Rule xsi:type="RuleCollection" Mode="And">

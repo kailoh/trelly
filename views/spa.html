@@ -5,36 +5,101 @@
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <script src="https://api.trello.com/1/client.js?key=cf72536b1d2b0a2b18e3e4aeaf7e2dde"></script>
+
+  <script src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js" type="text/javascript"></script>
+
   <script>
   var onAuthorize = function() {
+    console.log("onAuthorize");
     updateLoggedIn();
-    $("#output").empty();
+    $("#boards").empty();
+    $('#lists').empty();
+    $('#successStatus').empty();
 
     Trello.members.get("me", function(member){
       $("#fullName").text(member.fullName);
 
-      var $cards = $("<div>")
-      .text("Loading Cards...")
-      .appendTo("#output");
+      var $boards = $("<div>")
+      .text("Loading Boards...")
+      .appendTo("#boards");
 
         // Output a list of all of the cards that the member 
         // is assigned to
-        Trello.get("members/me/cards", function(cards) {
-          $cards.empty();
-          $.each(cards, function(ix, card) {
+        Trello.get("members/me/boards", { 'filter': 'open' }, function(boards) {
+          $boards.empty();
+
+          $("<b>").text("Select a board:").appendTo($boards);
+          $("<br>").appendTo($boards);
+
+
+
+          $.each(boards, function(ix, board) {
+            var toCallBoard = "getLists('" + board.id + "')";
             $("<a>")
-            .attr({href: card.url, target: "trello"})
-            .addClass("card")
-            .text(card.name)
-            .appendTo($cards);
+            .addClass("board")
+            .attr('href', "#")
+            .attr('onClick', toCallBoard)
+            .text(board.name)
+            .appendTo($boards);
+            $("<BR>").appendTo($boards);
           });  
         });
       });
 
-  };
+  };  
+
+  function getLists(boardId) {
+    $("#lists").empty();
+    console.log("getLists called, boardid = " + boardId);
+
+    var $lists = $("<div>")
+      .text("Loading Lists...")
+      .appendTo("#lists");
+
+    Trello.get("boards/" + boardId + "/lists", function(lists) {
+          $lists.empty();
+
+          $("<b>").text("Select a list to add to:").appendTo($lists);
+          $("<br>").appendTo($lists);
+
+          $.each(lists, function(ix, list) {
+            var toCallList = "addCard('" + list.id + "')";
+            $("<a>")
+            .addClass("list")
+            .attr('href', "#")
+            .attr('onClick', toCallList)
+            .text(list.name)
+            .appendTo($lists);
+            $("<BR>").appendTo($lists);
+          });  
+        });
+  }
+
+  function addCard(listId) {
+    var cardText = $("#entities_box").val();
+    console.log("addCard called, listId = " + listId + ", cardText = " + cardText);
+    var toPost = { 'due': null, 'name': cardText, 'idList': listId };
+        // 'due': null,
+        // 'name': "HEY",
+        // 'desc': "TEST",
+        // 'idList': listId, 
+        // 'urlSource' = null };
+    Trello.post("cards", toPost, function(success) {
+      showStatus("<b>Added!</b> <a href='" + success.shortUrl + "' target='_blank'>Click here to view card</a><BR><BR>");
+    }, function(failure) {
+      showStatus("<b>Failed to add card, please try again</b>");
+    });
+  }
+
+  function showStatus(message) {
+      var $statusMessage = $("<div>")
+      .append(message)
+      .appendTo("#successStatus");
+  }
 
   var updateLoggedIn = function() {
     var isLoggedIn = Trello.authorized();
+    console.log("isLoggedIn?" + isLoggedIn);
     $("#loggedout").toggle(!isLoggedIn);
     $("#loggedin").toggle(isLoggedIn);        
   };
@@ -42,60 +107,70 @@
   var logout = function() {
     Trello.deauthorize();
     updateLoggedIn();
+    $("#boards").empty();
+    $('#lists').empty();
+    $('#successStatus').empty();
   };
 
-  Trello.authorize({
-    interactive: false,
-    success: onAuthorize
+  $(document).ready(function () {
+    Trello.authorize({
+      interactive: false,
+      success: onAuthorize,
+      error: function() {
+        updateLoggedIn();
+      },
+      scope: { read: true, write: true }
+    });
   });
 
+
   $("#connectLink").click(function(){
-    console.log("CLICKED");
     Trello.authorize({
       type: "popup",
-      success: onAuthorize
+      success: onAuthorize,
+      scope: { read: true, write: true }
     })
   });
   </script>
   <script type="text/javascript" src="myscript.js"></script>
 </head>
 
-<body>
+<body style="margin-top:20px">
   <div class="container">
-    <h1>Save to Trello</h1>
-    <div id="loggedout">
-      <a id="connectLink" href="#" onclick="Trello.authorize({
-      type: 'popup',
-      success: onAuthorize
-    })">Connect To Trello</a>
+    <div class="form-group form-group-lg">
+    <textarea class="form-control" rows="1" id="entities_box"></textarea>
   </div>
-
-  <div id="loggedin">
-    <div id="header">
-      Logged in to as <span id="fullName"></span> 
-      <a id="disconnect" href="#">Log Out</a>
+  </div>
+  <div id="successStatus" class="container"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-6" id="boards"></div>
+      <div class="col-xs-6" id="lists"></div>
     </div>
-
-    <div id="output"></div>
   </div>
-</div>
-<hr class="featurette-divider">
-<div class="container">
-<button onclick="myGetTaskSuggestions();">Get Task Suggestions</button>
-</div>
-<div class="container" id="entities_box"></div>
-<hr class="featurette-divider">
+  <hr class="featurette-divider">
 
-<div class="container">
+  <div class="container">
 
   <footer>
+    <div id="loggedout"><a id="connectLink" href="#" onclick="Trello.authorize({
+    type: 'popup',
+    success: onAuthorize,
+    scope: { read: true, write: true }
+  })">Connect To Trello</a>
+  </div>
+
+    <div id="loggedin">
+    Logged in to Trello as <span id="fullName"></span> | 
+    <a id="disconnect" href="#" onclick="logout()">Log Out</a>
+    </div>
+
     <p>Save to Trello for Outlook &middot; <a href="cover" target="_blank">Website</a> &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
   </footer>
 </div>
 
 
 
-<script src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js" type="text/javascript"></script>
 
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
